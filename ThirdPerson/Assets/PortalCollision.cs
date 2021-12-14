@@ -6,6 +6,7 @@ public class PortalCollision : MonoBehaviour
 {
     public Transform objectInPortal;
     Portal myPortal;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +20,7 @@ public class PortalCollision : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name == "Player")
+        if (other.name == "Player" || other.name == "Enemy")
         {
             objectInPortal = other.transform;
 
@@ -43,7 +44,7 @@ public class PortalCollision : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.name == "Player")
+        if (other.name == "Player" || other.name == "Enemy")
         {
             objectInPortal = null;
         }

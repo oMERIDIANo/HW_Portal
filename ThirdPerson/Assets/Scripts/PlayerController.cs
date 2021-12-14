@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Cinemachine;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -52,26 +51,32 @@ public class PlayerController : MonoBehaviour
 
         anim.SetFloat("moveSpeed", Mathf.Abs(moveDirection.magnitude));
 
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * 50f, Color.red);
+
+        int layerMask = 1 << 8;
+        layerMask = ~layerMask;
+
         RaycastHit hit;
-
-        if (Physics.Raycast(transform.position + new Vector3(0, 1.5f, 0), transform.forward, out hit, 50))
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 50f, layerMask))
         {
-            if(Input.GetButtonDown("Fire1"))
+            if(hit.transform.name == "Player")
             {
-                portal1.transform.position = hit.point;
-                portal1.transform.up = transform.up;
-                Quaternion rotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
-                portal1.transform.rotation = rotation;
+                Debug.Log("Hitting Player");
             }
+        }
 
-            if(Input.GetButtonDown("Fire2"))
-            {
-                portal2.transform.position = hit.point;
-                portal2.transform.up = transform.up;
-                Quaternion rotation = Quaternion.LookRotation(-hit.normal, Vector3.up);
-                portal2.transform.rotation = rotation;
-            }
+        if (Input.GetButtonDown("Fire1"))
+        {
+            portal1.transform.position = hit.point;
+            Quaternion rotation = Quaternion.LookRotation(-hit.normal, transform.up);
+            portal1.transform.rotation = rotation;
+        }
 
+        if (Input.GetButtonDown("Fire2"))
+        {
+            portal2.transform.position = hit.point;
+            Quaternion rotation = Quaternion.LookRotation(-hit.normal, transform.up);
+            portal2.transform.rotation = rotation;
         }
 
         if (Input.GetButtonDown("Jump") && !startedCombo)
@@ -117,5 +122,4 @@ public class PlayerController : MonoBehaviour
     {
         swordCollider.enabled = false;
     }
-
 }

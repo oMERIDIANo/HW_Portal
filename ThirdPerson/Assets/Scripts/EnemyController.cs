@@ -31,6 +31,12 @@ public class EnemyController : MonoBehaviour
     float timeSinceHit = 0;
     bool foundAppropriate = false;
 
+    public GameObject portal1;
+    public GameObject portal2;
+    float distanceFromPlayer;
+    float distanceFromPortal1;
+    float distanceFromPortal2;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -44,9 +50,24 @@ public class EnemyController : MonoBehaviour
 
             return;
 
+        distanceFromPlayer = Vector3.Distance(FindObjectOfType<PlayerController>().transform.position, transform.position);
+        distanceFromPortal1 = Vector3.Distance(portal1.transform.position, transform.position);
+        distanceFromPortal2 = Vector3.Distance(portal2.transform.position, transform.position);
+
         timeSinceHit += Time.deltaTime;
 
-        goalLocation = FindObjectOfType<PlayerController>().transform.position;
+        if(distanceFromPortal1 < distanceFromPlayer && distanceFromPortal1 < distanceFromPortal2)
+        {
+            goalLocation = portal1.transform.position;
+        }
+        else if(distanceFromPortal2 < distanceFromPlayer && distanceFromPortal2 < distanceFromPortal1)
+        {
+            goalLocation = portal2.transform.position;
+        }
+        else if(distanceFromPlayer < distanceFromPortal1 && distanceFromPlayer < distanceFromPortal2)
+        {
+            goalLocation = FindObjectOfType<PlayerController>().transform.position;
+        }  
 
         //var fullVision = sight.Sight(90, 10, Color.red);
         var directlyInFront = obstacleSight.GetSightInformation();// (90, 3, 3, Color.blue);
@@ -65,7 +86,7 @@ public class EnemyController : MonoBehaviour
 
         }
 
-        Debug.Log(blocked);
+        Debug.Log("Blocked: " + blocked);
 
         // if we're blocked, find the first sight that isn't obstructed and head that way
         if (blocked)
